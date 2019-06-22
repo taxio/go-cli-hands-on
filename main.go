@@ -8,6 +8,9 @@ import (
 	"os"
 	"text/template"
 	"time"
+
+	"github.com/rakyll/statik/fs"
+	_ "github.com/taxio/go-cli-hands-on/statik"
 )
 
 var flgVersion bool
@@ -46,7 +49,11 @@ func main() {
 }
 
 func handleAddCmd(filename string) error {
-	btpl, _ := ioutil.ReadFile("./templates/report.md.tmpl")
+	statikFs, _ := fs.New()
+	tplFile, _ := statikFs.Open("/report.md.tmpl")
+	defer tplFile.Close()
+	btpl, _ := ioutil.ReadAll(tplFile)
+
 	stpl := string(btpl)
 
 	tpl := template.Must(template.New("report").Parse(stpl))
